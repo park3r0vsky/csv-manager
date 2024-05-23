@@ -1,0 +1,14 @@
+.DS_Store
+
+# IDE
+/.idea/
+/.vscode/
+
+# backend
+/backend/django/
+/backend/**/__pycache__/
+/backend/db.sqlite3
+/backend/media/uploads
+
+# frontend
+/frontend/node_modules/
