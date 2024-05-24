@@ -1,4 +1,4 @@
-# 📁 CSV MANAGER Documentation
+# 📘 CSV MANAGER Documentation
 
 ## TABLE OF CONTENTS
 
@@ -12,7 +12,7 @@
   ⚙️ Backend
   </li>
   <li>
-  Frontend
+  🎨 Frontend
   </li>
 </ol>
 </details>
@@ -40,6 +40,8 @@
 ## Running Project
 
 ### 💾 Clone repository
+
+<br>
 
 ### ⚙️ Backend
 
@@ -77,11 +79,13 @@ python manage.py makemigrations
 python manage.py migrate
 ```
 
-f. Start on port 8000:
+f. Start server on port 8000:
 
 ```
 python manage.py runserver
 ```
+
+<br>
 
 ### 🎨 Frontend
 
@@ -91,16 +95,52 @@ a. Go to frontend directory
 cd frontend
 ```
 
+b. Install dependencies
+
+```
+npm i
+```
+
+c. Start client on port 3000
+
+```
+npm start
+```
+
 <br>
 
 ## Endpoints
 
 ### 🟢 GET api/file/list
 
+📝 Gets list of uploaded files
+
+<br>
+
 ### 🟡 POST api/file
+
+📝 Uploads file
+
+Example Body: `{file: [data.csv]}`
+
+<br>
 
 ### 🔴 DELETE api/file
 
+📝 Deletes file from database
+
+Example Body: `{id: 1}`
+
+<br>
+
 ### 🟢 GET api/file/preview/[ID]
 
+📝 Previews file from given id - replace [ID] with number e.g. 1
+
+<br>
+
 ### 🟡 POST api/file/enrich/[ID]
+
+📝 Enriches file from given id - replace [ID] with number e.g. 1
+
+<br>
