@@ -7,6 +7,7 @@ import {
   DialogTitle,
   Button,
   TextField,
+  Alert,
 } from "@mui/material";
 import axios from "axios";
 import { AppContext } from "../context/AppContext";
@@ -15,6 +16,7 @@ import { FILES_API_URL } from "../constants";
 const NewFileModal = () => {
   const [open, setOpen] = useState(false);
   const [file, setFile] = useState(null);
+  const [error, setError] = useState(null);
   const { fetchFiles } = useContext(AppContext);
 
   const handleClickOpen = () => {
@@ -23,14 +25,27 @@ const NewFileModal = () => {
 
   const handleClose = () => {
     setOpen(false);
+    setFile(null);
+    setError(null);
   };
 
   const onFileChange = (e) => {
-    setFile(e.target.files[0]);
+    const selectedFile = e.target.files[0];
+    if (selectedFile && selectedFile.name.endsWith(".csv")) {
+      setFile(selectedFile);
+      setError(null);
+    } else {
+      setFile(null);
+      setError("Only CSV files are allowed.");
+    }
   };
 
   const onSubmit = async (e) => {
     e.preventDefault();
+    if (!file) {
+      setError("Please select a valid CSV file.");
+      return;
+    }
     const formData = new FormData();
     formData.append("file", file);
 
@@ -40,6 +55,7 @@ const NewFileModal = () => {
       handleClose();
     } catch (error) {
       console.error("Error uploading file:", error);
+      setError("Error uploading file.");
     }
   };
 
@@ -56,7 +72,10 @@ const NewFileModal = () => {
       <Dialog open={open} onClose={handleClose}>
         <DialogTitle>Upload New File</DialogTitle>
         <DialogContent>
-          <DialogContentText>Please select a file to upload.</DialogContentText>
+          <DialogContentText>
+            Please select a CSV file to upload.
+          </DialogContentText>
+          {error && <Alert severity="error">{error}</Alert>}
           <form onSubmit={onSubmit}>
             <TextField
               margin="dense"
@@ -64,6 +83,9 @@ const NewFileModal = () => {
               type="file"
               fullWidth
               onChange={onFileChange}
+              InputLabelProps={{
+                shrink: true,
+              }}
             />
             <Button color="primary" type="submit">
               Upload

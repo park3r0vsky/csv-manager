@@ -10,26 +10,34 @@ from .serializers import FileRecordSerializer
 
 @api_view(['GET'])
 def file_list(request):
-    files = FileRecord.objects.all()
-    serializer = FileRecordSerializer(files, many=True)
-    return Response(serializer.data)
+    try:
+        files = FileRecord.objects.all()
+        serializer = FileRecordSerializer(files, many=True)
+        return Response(serializer.data)
+    except Exception as e:
+        return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 @api_view(['POST', 'DELETE'])
 def file_add_del(request):
     if request.method == 'POST':
-        file = request.FILES['file']
-        file_name = file.name
-        upload_dir = os.path.join(settings.MEDIA_ROOT, 'uploads')
-        os.makedirs(upload_dir, exist_ok=True)
-        file_path = os.path.join(upload_dir, file_name)
-        file_record = FileRecord.objects.create(
-            file_name=file_name,
-            file_path=file_path, 
-        )
-        with open(file_record.file_path, 'wb+') as destination:
-            for chunk in file.chunks():
-                destination.write(chunk)
-        return Response(status=status.HTTP_201_CREATED)
+        try:
+            file = request.FILES['file']
+            if not file.name.endswith('.csv'):
+                return Response({"error": "Only CSV files are allowed."}, status=status.HTTP_400_BAD_REQUEST)
+            file_name = file.name
+            upload_dir = os.path.join(settings.MEDIA_ROOT, 'uploads')
+            os.makedirs(upload_dir, exist_ok=True)
+            file_path = os.path.join(upload_dir, file_name)
+            file_record = FileRecord.objects.create(
+                file_name=file_name,
+                file_path=file_path, 
+            )
+            with open(file_record.file_path, 'wb+') as destination:
+                for chunk in file.chunks():
+                    destination.write(chunk)
+            return Response(status=status.HTTP_201_CREATED)
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
     
     elif request.method == 'DELETE':
         file_id = request.data.get('id')
@@ -40,6 +48,8 @@ def file_add_del(request):
             return Response(status=status.HTTP_204_NO_CONTENT)
         except FileRecord.DoesNotExist:
             return Response(status=status.HTTP_404_NOT_FOUND)
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         
 @api_view(['GET'])
 def file_preview(request, id):
@@ -85,3 +95,5 @@ def file_enrich(request, id):
         return Response(status=status.HTTP_201_CREATED)
     except FileRecord.DoesNotExist:
         return Response(status=status.HTTP_404_NOT_FOUND)
+    except Exception as e:
+        return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
