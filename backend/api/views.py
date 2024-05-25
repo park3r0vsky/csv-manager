@@ -67,11 +67,10 @@ def file_enrich(request, id):
 
         response = requests.get(enrich_url)
         api_data = response.json()
-
-        api_df = pd.DataFrame(api_data)
+        api_df = pd.json_normalize(api_data)
 
         enriched_df = df.merge(api_df, left_on=join_column, right_on=api_key_column, how='left')
-
+        enriched_df = enriched_df.fillna('-')
         enriched_file_name = f"enriched_{file_record.file_name}"
         enriched_file_path = os.path.join(settings.MEDIA_ROOT, 'uploads', enriched_file_name)
         enriched_df.to_csv(enriched_file_path, index=False)
