@@ -43,7 +43,8 @@ def file_add_del(request):
         file_id = request.data.get('id')
         try:
             file_record = FileRecord.objects.get(id=file_id)
-            os.remove(file_record.file_path)
+            if os.path.exists(file_record.file_path):
+                os.remove(file_record.file_path)
             file_record.delete()
             return Response(status=status.HTTP_204_NO_CONTENT)
         except FileRecord.DoesNotExist:
@@ -93,6 +94,19 @@ def file_enrich(request, id):
         )
 
         return Response(status=status.HTTP_201_CREATED)
+    except FileRecord.DoesNotExist:
+        return Response(status=status.HTTP_404_NOT_FOUND)
+    except Exception as e:
+        return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+    
+
+@api_view(['GET'])
+def get_csv_columns(request, id):
+    try:
+        file_record = FileRecord.objects.get(id=id)
+        df = pd.read_csv(file_record.file_path, encoding='utf-8')
+        columns = df.columns.tolist()
+        return Response(columns)
     except FileRecord.DoesNotExist:
         return Response(status=status.HTTP_404_NOT_FOUND)
     except Exception as e:

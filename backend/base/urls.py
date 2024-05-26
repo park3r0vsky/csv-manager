@@ -8,4 +8,5 @@ urlpatterns = [
     re_path(r'^api/file$', views.file_add_del),
     re_path(r'^api/file/preview/([0-9]+)$', views.file_preview),
     re_path(r'^api/file/enrich/([0-9]+)$', views.file_enrich),
+    re_path(r'^api/file/columns/([0-9]+)$', views.get_csv_columns),
 ]

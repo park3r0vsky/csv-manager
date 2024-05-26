@@ -144,3 +144,9 @@ Example Body: `{id: 1}`
 📝 Enriches file from given id - replace [ID] with number e.g. 1
 
 <br>
+
+### 🟢 GET api/file/columns/[ID]
+
+📝 Shows the columns from file from given id - replace [ID] with number e.g. 1
+
+<br>
