@@ -1,5 +1,6 @@
 import os
 import requests
+import time
 import pandas as pd
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
@@ -24,12 +25,14 @@ def file_add_del(request):
             file = request.FILES['file']
             if not file.name.endswith('.csv'):
                 return Response({"error": "Only CSV files are allowed."}, status=status.HTTP_400_BAD_REQUEST)
-            file_name = file.name
+            file_name = os.path.splitext(file.name)[0]
+            timestamp = str(int(time.time()))
+            unique_file_name = f"{os.path.splitext(file.name)[0]}_{timestamp}.csv"
             upload_dir = os.path.join(settings.MEDIA_ROOT, 'uploads')
             os.makedirs(upload_dir, exist_ok=True)
             file_path = os.path.join(upload_dir, file_name)
             file_record = FileRecord.objects.create(
-                file_name=file_name,
+                file_name=unique_file_name,
                 file_path=file_path, 
             )
             with open(file_record.file_path, 'wb+') as destination:
