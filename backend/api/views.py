@@ -30,7 +30,7 @@ def file_add_del(request):
             unique_file_name = f"{os.path.splitext(file.name)[0]}_{timestamp}.csv"
             upload_dir = os.path.join(settings.MEDIA_ROOT, 'uploads')
             os.makedirs(upload_dir, exist_ok=True)
-            file_path = os.path.join(upload_dir, file_name)
+            file_path = os.path.join(upload_dir, unique_file_name)
             file_record = FileRecord.objects.create(
                 file_name=unique_file_name,
                 file_path=file_path, 
