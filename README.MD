@@ -14,25 +14,31 @@
   <li>
   🎨 Frontend
   </li>
+    <li>
+  🐋 Alternative - Docker
+  </li>
 </ol>
 </details>
 <details>
 <summary> <a href="#endpoints">Endpoints</a></summary>
 <ol>
   <li>
-  GET /api/files/list
+  🟢 GET /api/files/list
   </li>
   <li>
-  POST /api/files
+  🟡 POST /api/files
   </li>
   <li>
-  DELETE /api/files
+  🔴 DELETE /api/files
   </li>
     <li>
-  GET /api/files/previev/ID
+  🟢 GET /api/files/previev/ID
+  </li>
+    <li>
+  🟡 POST /api/files/enrich/ID
   </li>
       <li>
-  POST /api/files/enrich/ID
+  🟢 GET /api/files/columns/ID
   </li>
 </ol>
 </details>
@@ -109,6 +115,37 @@ npm start
 
 <br>
 
+### 🐋 Alternative - Docker
+
+a. Run command:
+
+```
+docker compose up --build
+```
+
+b. Additionally you may switch database from default sqlite3 to postgres by going to backend/base/settings.py and switching comments this way:
+
+```
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': BASE_DIR / 'db.sqlite3',
+#     }
+# }
+
+
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'yourdbname',
+        'USER': 'yourdbuser',
+        'PASSWORD': 'yourdbpassword',
+        'HOST': 'db',
+        'PORT': '5432',
+    }
+}
+```
+
 ## Endpoints
 
 ### 🟢 GET api/file/list
@@ -150,3 +187,8 @@ Example Body: `{id: 1}`
 📝 Shows the columns from file from given id - replace [ID] with number e.g. 1
 
 <br>
+
+## Additional notes:
+
+- There is a possibility to use Celary to make UX even better but IMHO it would be overkill in this case
+- On prod things like database credentials etc. should be in env variables not in file
